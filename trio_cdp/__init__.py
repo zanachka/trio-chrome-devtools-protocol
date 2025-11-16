@@ -197,13 +197,18 @@ class CdpBase:
         Close all open channels. This will cause any async for loops using
         listen() to exit gracefully.
         '''
-        for event_type, senders in self.channels.items():
-            for sender in senders:
-                try:
-                    sender.close()
-                except trio.BrokenResourceError:
-                    # Channel may already be closed
-                    pass
+        # Collect all unique senders (same sender may be registered for multiple event types)
+        all_senders = set()
+        for senders in self.channels.values():
+            all_senders.update(senders)
+        
+        # Close each sender once
+        for sender in all_senders:
+            try:
+                sender.close()
+            except trio.BrokenResourceError:
+                # Channel may already be closed
+                pass
         self.channels.clear()
 
 
