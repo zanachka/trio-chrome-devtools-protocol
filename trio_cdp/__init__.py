@@ -239,8 +239,12 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
         and it will execute on the current session automatically.
         '''
         session = await self.connect_session(target_id)
-        with session_context(session):
-            yield session
+        try:
+            with session_context(session):
+                yield session
+        finally:
+            await self.execute(cdp.target.detach_from_target(
+                session.session_id, session.target_id))
 
     async def connect_session(self, target_id: cdp.target.TargetID) -> 'CdpSession':
         '''
