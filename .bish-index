@@ -1,0 +1,14 @@
+./trio_cdp/__init__.py
+./trio_cdp/context.py
+./examples/get_title.py
+./examples/screenshot.py
+./examples/take_heap_snapshot.py
+./AGENTS.md
+./README.md
+./generator/__init__.py
+./generator/generate.py
+./generator/test_generate.py
+./tests/test_session_detach.py
+./tests/test_trio_cdp.py
+./tests/__init__.py
+./docs/conf.py
