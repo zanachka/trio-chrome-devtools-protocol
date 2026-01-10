@@ -13,6 +13,50 @@ I/O using [Trio](https://trio.readthedocs.io/). This library handles the
 WebSocket negotiation and session management, allowing you to transparently
 multiplex commands, responses, and events over a single connection.
 
+## Connecting to Chrome
+
+Trio CDP supports two ways to connect to Chrome:
+
+### 1. Using an HTTP URL (Recommended for automation)
+
+The simplest way to connect is by using an HTTP URL. When Chrome is started with
+`--remote-debugging-port=9222`, you can connect using:
+
+```python
+from trio_cdp import open_cdp
+
+async with open_cdp('http://localhost:9222') as conn:
+    # Your code here
+    ...
+```
+
+The library will automatically discover the WebSocket URL from Chrome's HTTP endpoint.
+
+### 2. Using a WebSocket URL directly
+
+You can also provide a WebSocket URL directly:
+
+```python
+async with open_cdp('ws://localhost:9222/devtools/browser/...') as conn:
+    ...
+```
+
+### 3. Using the discovery function
+
+For more control, use the `find_chrome_debugger_url()` function:
+
+```python
+from trio_cdp import find_chrome_debugger_url, open_cdp
+
+# Discover the WebSocket URL
+browser_url = find_chrome_debugger_url(port=9222)
+
+async with open_cdp(browser_url) as conn:
+    ...
+```
+
+## Example Usage
+
 The example below demonstrates the salient features of the library by navigating to a
 web page and extracting the document title.
 
